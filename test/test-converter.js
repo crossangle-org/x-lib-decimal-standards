@@ -1,6 +1,3 @@
-// import { convert } from 'src/converter.js'
-// import { convertDecimalStandards as convert } from '../src/converter.js';
-// import { equal as assert_equal, isNaN as assert_expect } from 'chai';
 var assert_equal = require('chai').assert
 var assert_expect = require('chai').expect
 var convert = require('../src/converter.js')
@@ -9,6 +6,10 @@ var convert = require('../src/converter.js')
 describe("currency in USD", function() {
   it("0 (zero)", function() {
     assert_equal(convert(0, 'USD'), '$0');
+  });
+
+  it("1087641653940.0972", function() {
+    assert_equal(convert('1087641653940.0972', 'USD'), '$1.09T');
   });
 
   it("3 (10 ^ 0)", function() {
