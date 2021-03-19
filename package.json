@@ -1,0 +1,31 @@
+{
+  "name": "decimal-standards",
+  "version": "1.0.0",
+  "description": "crossangle's library to convert decimal standards from large number",
+  "scripts": {
+    "test": "mocha",
+    "build": "npx webpack --mode production"
+  },
+  "keywords": [],
+  "author": "sean-shine",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
+    "webpack": "^5.26.3",
+    "webpack-cli": "^4.5.0"
+  },
+  "main": "webpack.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crossangle-org/x-lib-decimal-standards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/crossangle-org/x-lib-decimal-standards/issues"
+  },
+  "homepage": "https://github.com/crossangle-org/x-lib-decimal-standards#readme"
+}
