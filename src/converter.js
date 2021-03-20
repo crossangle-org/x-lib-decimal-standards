@@ -1,24 +1,30 @@
 /*
   input:
     d - string or number to convert('12345678.90', 12345678.90)
-    c - currency information (USD, KRW)
+    c - currency information (USD, KRW, IDR, RUB, JPY)
     s - whether prepend a currency symbol or not
   output (string):
-    if result is NaN (Not a Number), return default '-'
-    '12,345,678' (only d) or '$12.00M' (c is USD, s is '$')   
+    if result is NaN (Not a Number) or occur error, return default '-'
+    '12,345,678' (only d) or '$12.00M' (in case c is USD, s is '$')   
 */
-module.exports = function (d, c) {
-  d = Number(d)
-  if (d < 0 || isNaN(d)) {
-    return '-'; 
-  }
-
+module.exports = function (d, c = 'USD', s = true) {
   let r = '-'
-  if (c === 'USD') r = _convertToUSD(d, '$')
-  else if (c === 'KRW') r = _convertToKRW(d, '₩')
-  else if (c === 'RUB') r = _convertToUSD(d, '₽')
-  else if (c === 'IDR') r = _convertToIDR(d, 'Rp')
-  else if (c === 'JPY') r = _convertToKRW(d, '¥')
+
+  try {
+    d = Number(d)
+    if (d < 0 || isNaN(d)) {
+      return r; 
+    }
+  } catch {
+    console.error('ocurred error')
+    return r
+  }
+  
+  if (c === 'USD') r = _convertToUSD(d, s ? '$' : '')
+  else if (c === 'KRW') r = _convertToKRW(d, s ? '₩' : '')
+  else if (c === 'RUB') r = _convertToUSD(d, s ? '₽' : '')
+  else if (c === 'IDR') r = _convertToIDR(d, s ? 'Rp' : '')
+  else if (c === 'JPY') r = _convertToKRW(d, s ? '¥' : '')
 
   return r
 }

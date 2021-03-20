@@ -16,6 +16,10 @@ describe("currency in USD", function() {
     assert_equal(convert(3, 'USD'), '$3');
   });
 
+  it("23 (10 ^ 1)", function() {
+    assert_equal(convert(23, 'USD', false), '23');
+  });
+
   it("87 (10 ^ 1)", function() {
     assert_equal(convert(87, 'USD'), '$87');
   });

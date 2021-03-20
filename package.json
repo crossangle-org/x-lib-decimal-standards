@@ -1,6 +1,6 @@
 {
-  "name": "@crossangle-frontend/decimal-standards",
-  "version": "1.0.0",
+  "name": "@crossangle/decimal-standards",
+  "version": "1.0.2",
   "description": "crossangle's library to convert decimal standards from large number",
   "scripts": {
     "test": "mocha",
@@ -15,7 +15,7 @@
     "webpack": "^5.26.3",
     "webpack-cli": "^4.5.0"
   },
-  "main": "webpack.config.js",
+  "main": "./src/converter.js",
   "directories": {
     "test": "test"
   },
