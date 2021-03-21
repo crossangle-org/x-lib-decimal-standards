@@ -1,4 +1,4 @@
-var assert_equal = require('chai').assert
+var assert_equal = require('chai').assert.equal
 var assert_expect = require('chai').expect
 var convert = require('../src/converter.js')
 
@@ -130,6 +130,10 @@ describe("currency in KRW", function() {
     assert_equal(convert('198672', 'KRW'), '₩198,672');
   });
 
+  it("943926.8530263979 (10 ^ 5)", function() {
+    assert_equal(convert(943926.8530263979, 'KRW'), '₩943,927');
+  });
+
   it("4,785,789 (10 ^ 6)", function() {
     assert_equal(convert(4785789.85, 'KRW'), '₩4.79백만');
   });
@@ -184,6 +188,10 @@ describe("currency in KRW", function() {
 
   it("95,345,100,000,844,198,672 (10 ^ 19)", function() {
     assert_equal(convert('95345100000844198672', 'KRW'), '₩9,534.51경');
+  });
+
+  it("1e-8 (under 1)", function() {
+    assert_expect(convert(1e-8, 'KRW')).to.equal('-');
   });
 
   it("-898 (negative)", function() {

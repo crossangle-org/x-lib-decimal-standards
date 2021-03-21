@@ -1,7 +1,7 @@
 {
   "name": "@crossangle/decimal-standards",
-  "version": "1.0.2",
-  "description": "crossangle's library to convert decimal standards from large number",
+  "version": "1.0.8",
+  "description": "Crossangle's library to convert decimal standards from a large number",
   "scripts": {
     "test": "mocha",
     "build": "npx webpack --mode production"
