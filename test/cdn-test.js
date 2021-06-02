@@ -1,6 +1,26 @@
 describe("currency in USD", function() {
+  it("under 0 -2", function() {
+    assert.equal(convert(0.065264, 'USD'), '$0.07');
+  });
+
+  it("under 0 -3", function() {
+    assert.equal(convert(0.065264, 'USD', 3), '$0.065');
+  });
+
   it("0 (zero)", function() {
     assert.equal(convert(0, 'USD'), '$0');
+  });
+
+  it("6.564626", function() {
+    assert.equal(convert(6.564626, 'USD'), '$6.56');
+  });
+
+  it("65.64626", function() {
+    assert.equal(convert(65.64626, 'USD', 0), '$65');
+  });
+
+  it("6.564626", function() {
+    assert.equal(convert(6.564626, 'USD', 0), '$6');
   });
 
   it("1087641653940.0972", function() {
@@ -8,19 +28,19 @@ describe("currency in USD", function() {
   });
 
   it("3 (10 ^ 0)", function() {
-    assert.equal(convert(3, 'USD'), '$3');
+    assert.equal(convert(3, 'USD', 1), '$3.0');
   });
 
   it("23 (10 ^ 1)", function() {
-    assert.equal(convert(23, 'USD', false), '23');
+    assert.equal(convert(23, 'USD', 2, false), '23.00');
   });
 
   it("87 (10 ^ 1)", function() {
-    assert.equal(convert(87, 'USD'), '$87');
+    assert.equal(convert(87, 'USD', 3), '$87.000');
   });
 
   it("531 (10 ^ 2)", function() {
-    assert.equal(convert(531, 'USD'), '$531');
+    assert.equal(convert(531, 'USD', 1), '$531.0');
   });
 
   it("4,785 (10 ^ 3)", function() {
@@ -97,36 +117,48 @@ describe("currency in USD", function() {
 });
 
 describe("currency in KRW", function() {
+  it("under 0 -2", function() {
+    assert.equal(convert(0.065264, 'KRW'), '₩0.07');
+  });
+
+  it("under 0 -3", function() {
+    assert.equal(convert(0.065264, 'KRW', 3), '₩0.065');
+  });
+
+  it("6.564626", function() {
+    assert.equal(convert(6.564626, 'KRW'), '₩6.56');
+  });
+
   it("0 (zero)", function() {
-    assert.equal(convert(0, 'KRW'), '₩0');
+    assert.equal(convert(0, 'KRW', 0), '₩0');
   });
 
   it("3 (10 ^ 0)", function() {
-    assert.equal(convert(3, 'KRW'), '₩3');
+    assert.equal(convert(3, 'KRW', 1), '₩3.0');
   });
 
   it("87 (10 ^ 1)", function() {
-    assert.equal(convert(87, 'KRW'), '₩87');
+    assert.equal(convert(87, 'KRW', 2), '₩87.00');
   });
 
   it("531 (10 ^ 2)", function() {
-    assert.equal(convert(531, 'KRW'), '₩531');
+    assert.equal(convert(531, 'KRW', 3), '₩531.000');
   });
 
   it("4,785 (10 ^ 3)", function() {
-    assert.equal(convert(4785, 'KRW'), '₩4,785');
+    assert.equal(convert(4785, 'KRW'), '₩4,785.00');
   });
 
   it("56,996 (10 ^ 4)", function() {
-    assert.equal(convert(56996, 'KRW'), '₩56,996');
+    assert.equal(convert(56996, 'KRW'), '₩56,996.00');
   });
 
   it("198,672 (10 ^ 5)", function() {
-    assert.equal(convert('198672', 'KRW'), '₩198,672');
+    assert.equal(convert('198672', 'KRW'), '₩198,672.00');
   });
 
   it("943926.8530263979 (10 ^ 5)", function() {
-    assert.equal(convert(943926.8530263979, 'KRW'), '₩943,927');
+    assert.equal(convert(943926.8530263979, 'KRW'), '₩943,926.85');
   });
 
   it("4,785,789 (10 ^ 6)", function() {
@@ -197,7 +229,7 @@ describe("currency in KRW", function() {
     assert.isNaN(convert(undefined, 'KRW'), '-');
   });
 });
-
+/*
 describe("currency in RUB", function() {
   it("0 (zero)", function() {
     assert.equal(convert(0, 'RUB'), '₽0');
@@ -475,3 +507,4 @@ describe("currency in INR", function() {
     assert.isNaN(convert(undefined, 'IDR'), '-');
   });
 });
+*/

@@ -1,13 +1,13 @@
 {
   "name": "@crossangle/decimal-standards",
-  "version": "1.0.8",
+  "version": "1.0.18",
   "description": "Crossangle's library to convert decimal standards from a large number",
   "scripts": {
     "test": "mocha",
     "build": "npx webpack --mode production"
   },
   "keywords": [],
-  "author": "",
+  "author": "sean-shine",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.3.4",

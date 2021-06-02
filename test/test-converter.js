@@ -4,6 +4,14 @@ var convert = require('../src/converter.js')
 
 
 describe("currency in USD", function() {
+  it("under 0 -2", function() {
+    assert_equal(convert(0.065264, 'USD'), '$0.07');
+  });
+
+  it("under 0 -3", function() {
+    assert_equal(convert(0.065264, 'USD', 3), '$0.065');
+  });
+
   it("0 (zero)", function() {
     assert_equal(convert(0, 'USD'), '$0');
   });
@@ -17,7 +25,7 @@ describe("currency in USD", function() {
   });
 
   it("23 (10 ^ 1)", function() {
-    assert_equal(convert(23, 'USD', false), '23');
+    assert_equal(convert(23, 'USD', 2, false), '23');
   });
 
   it("87 (10 ^ 1)", function() {
@@ -102,6 +110,14 @@ describe("currency in USD", function() {
 });
 
 describe("currency in KRW", function() {
+  it("under 0 -2", function() {
+    assert_equal(convert(0.065264, 'KRW'), '₩0.07');
+  });
+
+  it("under 0 -3", function() {
+    assert_equal(convert(0.065264, 'KRW', 3), '₩0.065');
+  });
+
   it("0 (zero)", function() {
     assert_equal(convert(0, 'KRW'), '₩0');
   });
@@ -202,7 +218,7 @@ describe("currency in KRW", function() {
     assert_expect(convert(undefined, 'KRW')).to.equal( '-');
   });
 });
-
+/*
 describe("currency in RUB", function() {
   it("0 (zero)", function() {
     assert_equal(convert(0, 'RUB'), '₽0');
@@ -480,3 +496,4 @@ describe("currency in INR", function() {
     assert_expect(convert(undefined, 'IDR')).to.equal('-');
   });
 });
+*/

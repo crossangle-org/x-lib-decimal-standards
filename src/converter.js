@@ -9,16 +9,17 @@ const U_PX = Math.pow(10, 18)
 
 class DecimalConverter {
 
-  constructor(target_number, currency, has_symbol = true) {
+  constructor(target_number, currency, fix_unit = 2, has_symbol = true) {
     this.number = target_number
     this.symbol = has_symbol
+    this.fixed = fix_unit
     this.currency = currency || 'USD'
   }
 
   convert(symbol) {
     const number = Number(this.number)
     if (number === 0) return symbol + 0
-    if (number < 0.1) return -1
+    if (number < 0.0001) return -1
 
     if      (this.currency === 'KRW') return this._convertToKRW(number, symbol)
     else if (this.currency === 'IDR') return this._convertToIDR(number, symbol)
@@ -29,7 +30,7 @@ class DecimalConverter {
 
   _convertToUSD(d, s) {
     if (d < U_PK) {
-      return s + d
+      return s + this._fixUnits(d)
     } else if (d < U_PM) {
       return s + this._fixUnits(d, U_PK) + (s === '₽' ? 'тыс.' : 'K')
     } else if (d < U_PB) {
@@ -43,10 +44,8 @@ class DecimalConverter {
   }
   
   _convertToKRW(d, s) {
-    if (d < U_PK) {
-      return s + d
-    } else if (d < U_PM) {
-      return s + this._noFixUnits(d)
+    if (d < U_PM) {
+      return s + this._fixUnits(d)
     } else if (d < U_HM) {
       return s + this._fixUnits(d, U_PM) + (s === '¥' ? '万円' : '백만')
     } else if (d < U_PT) { 
@@ -58,10 +57,8 @@ class DecimalConverter {
   }
   
   _convertToIDR(d, s) {
-    if (d < U_PK) {
-      return s + d
-    } else if (d < U_PM) {
-      return s + this._noFixUnits(d)
+    if (d < U_PM) {
+      return s + this._fixUnits(d)
     } else if (d < U_PB) {
       return s + this._fixUnits(d, U_PM) + 'M'
     } else if (d < U_PT) {
@@ -77,17 +74,25 @@ class DecimalConverter {
   _fixUnits(d, u) {
     let r = 0
     try {
-      const m = d / u
-      const [n, g] = m.toFixed(2).split('.')
-      r = n.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (g ? `.${g}` : '.00') 
+      const m = !u ? d : d / u
+      const [n, g] = m.toFixed(this.fixed).split('.')
+      r = n.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (g ? `.${g}` : _getReplacedUnit()) 
       // console.log(r, n, g)
     } catch {
       r = -1
-      console.warn('somthing wrong', d, u)
+      console.warn('somthing is wrong', d, u)
     }
     return r
   }
   
+  _getReplacedUnit() {
+    let unit = '.'
+    for (let i = 0; i < this.fixed; i++) {
+      unit += '0'
+    }  
+    return unit
+  }
+
   _noFixUnits(d) {
     let r = 0
     try {
@@ -95,7 +100,7 @@ class DecimalConverter {
       r = n.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     } catch {
       r = -1
-      console.warn('somthing wrong', d)
+      console.warn('somthing is wrong', d)
     }
     return r
   }
@@ -112,13 +117,14 @@ const CURRENCY_MAP = {
   input:
     d - target string or number to convert('12345678.90', 12345678.90)
     c - currency information to convert (USD, KRW, IDR, RUB, JPY)
+    f - fix unit (3 -> 1.003, 2 -> 1.01) 
     s - currency symbol to pretend
   output (string):
     '12,345,678' => '$12.00M' (in case c is USD, s is '$')
     otherwise return '-'   
 */
-module.exports = function (d, c, s) {
-  const cvt = new DecimalConverter(d, c, s)
+module.exports = function (d, c, f, s) {
+  const cvt = new DecimalConverter(d, c, f, s)
   let r = '-'
 
   try {
