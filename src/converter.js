@@ -168,7 +168,7 @@ module.exports = function (d, c, o = {}) {
   }
   
   const symbol = CURRENCY_MAP[cvt.currency]
-  r = cvt.convert(cvt.noSymbol ? symbol : '')
+  r = cvt.convert(cvt.noSymbol ? '' : symbol)
 
   return r < 0 ? '-' : r
 }

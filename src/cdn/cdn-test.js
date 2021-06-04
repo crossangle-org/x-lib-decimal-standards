@@ -1,4 +1,4 @@
-/*
+
 describe("currency in USD", function() {
   it("under 0 -2", function() {
     assert.equal(convert(0.065264, 'USD'), '$0.07');
@@ -116,7 +116,7 @@ describe("currency in USD", function() {
     assert.isNaN(convert(undefined, 'USD'), '-');
   });
 });
-*/
+
 describe("currency in KRW", function() {
   it("under 0 -2", function() {
     assert.equal(convert(0.065264, 'KRW'), '₩0.0653');

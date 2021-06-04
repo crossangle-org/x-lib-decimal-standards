@@ -1,15 +1,15 @@
 var assert_equal = require('chai').assert.equal
 var assert_expect = require('chai').expect
-var convert = require('../src/converter.js').default
+var convert = require('../src/converter.js')
 
 
 describe("currency in USD", function() {
   it("under 0 -2", function() {
-    assert_equal(convert(0.065264, 'USD'), '$0.07');
+    assert_equal(convert(0.065264, 'USD'), '$0.0653');
   });
 
   it("under 0 -3", function() {
-    assert_equal(convert(0.065264, 'USD', 3), '$0.065');
+    assert_equal(convert(0.065264, 'USD', {point: 3}), '$0.065');
   });
 
   it("0 (zero)", function() {
@@ -21,19 +21,19 @@ describe("currency in USD", function() {
   });
 
   it("3 (10 ^ 0)", function() {
-    assert_equal(convert(3, 'USD'), '$3');
+    assert_equal(convert(3, 'USD'), '$3.000');
   });
 
   it("23 (10 ^ 1)", function() {
-    assert_equal(convert(23, 'USD', 2, false), '23');
+    assert_equal(convert(23, 'USD', {symbol: false, point: 0}), '23');
   });
 
   it("87 (10 ^ 1)", function() {
-    assert_equal(convert(87, 'USD'), '$87');
+    assert_equal(convert(87, 'USD'), '$87.000');
   });
 
   it("531 (10 ^ 2)", function() {
-    assert_equal(convert(531, 'USD'), '$531');
+    assert_equal(convert(531, 'USD'), '$531.00');
   });
 
   it("4,785 (10 ^ 3)", function() {
@@ -110,12 +110,12 @@ describe("currency in USD", function() {
 });
 
 describe("currency in KRW", function() {
-  it("under 0 -2", function() {
-    assert_equal(convert(0.065264, 'KRW'), '₩0.07');
+  it("under 0 ", function() {
+    assert_equal(convert(0.065264, 'KRW'), '₩0.0653');
   });
 
-  it("under 0 -3", function() {
-    assert_equal(convert(0.065264, 'KRW', 3), '₩0.065');
+  it("under 0, point 3", function() {
+    assert_equal(convert(0.065264, 'KRW', {point: 3}), '₩0.065');
   });
 
   it("0 (zero)", function() {
@@ -123,31 +123,43 @@ describe("currency in KRW", function() {
   });
 
   it("3 (10 ^ 0)", function() {
-    assert_equal(convert(3, 'KRW'), '₩3');
+    assert_equal(convert(3, 'KRW', {point: 0}), '₩3');
   });
 
   it("87 (10 ^ 1)", function() {
-    assert_equal(convert(87, 'KRW'), '₩87');
+    assert_equal(convert(87, 'KRW'), '₩87.000');
   });
 
   it("531 (10 ^ 2)", function() {
-    assert_equal(convert(531, 'KRW'), '₩531');
+    assert_equal(convert(531, 'KRW'), '₩531.00');
   });
 
   it("4,785 (10 ^ 3)", function() {
-    assert_equal(convert(4785, 'KRW'), '₩4,785');
+    assert_equal(convert(4785, 'KRW'), '₩4,785.00');
+  });
+
+  it("4,785 (10 ^ 3), axis", function() {
+    assert_equal(convert(4785, 'KRW', {axis: true}), '₩4,785');
   });
 
   it("56,996 (10 ^ 4)", function() {
-    assert_equal(convert(56996, 'KRW'), '₩56,996');
+    assert_equal(convert(56996, 'KRW', {axis: false}), '₩56,996.00');
   });
 
   it("198,672 (10 ^ 5)", function() {
-    assert_equal(convert('198672', 'KRW'), '₩198,672');
+    assert_equal(convert('198672', 'KRW'), '₩198,672.00');
+  });
+
+  it("198,672 (10 ^ 5), axis, symbol", function() {
+    assert_equal(convert('198672', 'KRW', {symbol: true, axis: true}), '₩198,672');
   });
 
   it("943926.8530263979 (10 ^ 5)", function() {
-    assert_equal(convert(943926.8530263979, 'KRW'), '₩943,927');
+    assert_equal(convert(943926.8530263979, 'KRW'), '₩943,926.85');
+  });
+
+  it("943926.8530263979 (10 ^ 5), point 1", function() {
+    assert_equal(convert(943926.8530263979, 'KRW', {point: 1}), '₩943,926.9');
   });
 
   it("4,785,789 (10 ^ 6)", function() {
@@ -190,6 +202,10 @@ describe("currency in KRW", function() {
     assert_equal(convert(1021001003785789, 'KRW'), '₩1,021.00조');
   });
 
+  it("1,021,001,003,785,789 (10 ^ 15), axis", function() {
+    assert_equal(convert(1021001003785789, 'KRW', {axis: true}), '₩1,021.00조');
+  });
+
   it("10,010,000,012,995,223 (10 ^ 16)", function() {
     assert_equal(convert('10010000012995223', 'KRW'), '₩1.00경');
   });
@@ -207,7 +223,11 @@ describe("currency in KRW", function() {
   });
 
   it("1e-8 (under 1)", function() {
-    assert_expect(convert(1e-8, 'KRW')).to.equal('-');
+    assert_expect(convert(1e-8, 'KRW')).to.equal('₩0.0000000100');
+  });
+
+  it("1e-8 (under 1), symbol false, point 8", function() {
+    assert_expect(convert(1e-8, 'KRW', {symbol: false, point: 8})).to.equal('0.00000001');
   });
 
   it("-898 (negative)", function() {
