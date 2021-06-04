@@ -1,11 +1,11 @@
-const U_PK = 10e2
-const U_PM = 10e5
-const U_HM = 10e7  // 1억
-const U_PB = 10e8 
-const U_PT = 10e11 // 1조
-const U_PQ = 10e14 
-const U_TQ = 10e15 // 1경
-const U_PX = 10e17 
+const U_PK = 1e3
+const U_PM = 1e6
+const U_HM = 1e8  // 1억
+const U_PB = 1e9 
+const U_PT = 1e12 // 1조
+const U_PQ = 1e15 
+const U_TQ = 1e16 // 1경
+const U_PX = 1e18 
 
 class DecimalConverter {
 
@@ -108,14 +108,14 @@ class DecimalConverter {
   }
 
   _decimalPoint(v) {
-    if (v >= 100) return 2
-  
-    for (let i = 7; i > 1; i--) {
-      const point = 1 / Math.pow(10, i)
-      if (v < point) return i + (this.isAxis ? 2 : 3)
+    if (v >= 10) return v >= 100 || this.isAxis ? 2 : 3
+
+    if (v < 1) {
+        const point = Math.floor(Math.log10(v))
+        return Math.abs(point) + (this.isAxis ? 2 : 3)
     }
   
-    return v < 1 ? 4 : 3 // < 100
+    return 3 // 1 <= v <
   }
 
   _noFixUnits(d) {
@@ -163,7 +163,7 @@ module.exports = function (d, c, o = {}) {
       return r; 
     }
   } catch {
-    console.error('ocurred error')
+    console.error('error occur')
     return r
   }
   
