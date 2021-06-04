@@ -8,8 +8,16 @@ describe("currency in USD", function() {
     assert_equal(convert(0.065264, 'USD'), '$0.0653');
   });
 
-  it("under 0 -3", function() {
+  it("under 0, point 3", function() {
     assert_equal(convert(0.065264, 'USD', {point: 3}), '$0.065');
+  });
+
+  it("under 0, axis false", function() {
+    assert_equal(convert(0.000652111, 'USD', {axis: false}), '$0.000652');
+  });
+
+  it("under 0, axis true", function() {
+    assert_equal(convert(0.000652111, 'USD', {axis: true}), '$0.00065');
   });
 
   it("0 (zero)", function() {

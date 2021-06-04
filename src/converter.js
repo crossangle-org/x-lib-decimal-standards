@@ -112,7 +112,7 @@ class DecimalConverter {
   
     for (let i = 7; i > 1; i--) {
       const point = 1 / Math.pow(10, i)
-      if (v < point) return i + 3
+      if (v < point) return i + (this.isAxis ? 2 : 3)
     }
   
     return v < 1 ? 4 : 3 // < 100
