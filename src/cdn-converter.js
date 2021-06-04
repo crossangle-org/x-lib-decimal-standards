@@ -1,25 +1,33 @@
-const U_PK = Math.pow(10, 3)
-const U_PM = Math.pow(10, 6)
-const U_HM = Math.pow(10, 8)  // 1억
-const U_PB = Math.pow(10, 9)
-const U_PT = Math.pow(10, 12) // 1조
-const U_PQ = Math.pow(10, 15) 
-const U_TQ = Math.pow(10, 16) // 1경
-const U_PX = Math.pow(10, 18) 
+const U_PK = 10e2
+const U_PM = 10e5
+const U_HM = 10e7  // 1억
+const U_PB = 10e8 
+const U_PT = 10e11 // 1조
+const U_PQ = 10e14 
+const U_TQ = 10e15 // 1경
+const U_PX = 10e17 
 
 class DecimalConverter {
 
-  constructor(target_number, currency, fixed_unit = 2, has_symbol = true) {
-    this.number = target_number
-    this.symbol = has_symbol
-    this.fixed = fixed_unit
+  constructor(targetNumber, currency, options) {
+    // required
+    this.number = targetNumber
     this.currency = currency || 'USD'
+
+    // optional
+    const { symbol, axis, point } = options
+    this.noSymbol = symbol === false
+    this.isAxis = axis
+
+    this.fixed = this._decimalPoint(targetNumber)
+    if (point >= 0) {
+      this.fixed = point
+    }
   }
 
   convert(symbol) {
     const number = Number(this.number)
     if (number === 0) return symbol + 0
-    if (number < 0.0001) return -1
 
     if      (this.currency === 'KRW') return this._convertToKRW(number, symbol)
     else if (this.currency === 'IDR') return this._convertToIDR(number, symbol)
@@ -44,8 +52,10 @@ class DecimalConverter {
   }
   
   _convertToKRW(d, s) {
-    if (d < U_PM) {
+    if (d < U_PK) {
       return s + this._fixUnits(d)
+    } else if (d < U_PM) {
+      return s + (this.isAxis ? this._noFixUnits(d) : this._fixUnits(d))
     } else if (d < U_HM) {
       return s + this._fixUnits(d, U_PM) + (s === '¥' ? '万円' : '백만')
     } else if (d < U_PT) { 
@@ -74,25 +84,40 @@ class DecimalConverter {
   _fixUnits(d, u) {
     let r = 0
     try {
-      const m = !u ? d : d / u
+      let m = !u ? d : d / u
       if (this.fixed === 0) {
-        return m.toFixed(this.fixed)
+        return this._noFixUnits(m)
+      } else {
+        const [n, g] = m.toFixed(this.fixed).split('.')
+        r = n.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (g ? `.${g}` : _replacedUnit()) 
+        // console.log(r, d, n, g)
       }
-      const [n, g] = m.toFixed(this.fixed).split('.')
-      r = n.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (g ? `.${g}` : _getReplacedUnit()) 
-    } catch {
+    } catch (e) {
       r = -1
-      console.warn('somthing is wrong', d, u)
+      console.warn(`(fix) somthing is wrong ${e}`, d, u)
     }
     return r
   }
   
-  _getReplacedUnit() {
+  _replacedUnit() {
     let unit = '.'
     for (let i = 0; i < this.fixed; i++) {
       unit += '0'
     }  
     return unit
+  }
+
+  _decimalPoint(v) {
+    if (v >= 100) return 2
+  
+    for (let i = 7; i > 1; i--) {
+      const point = 1 / Math.pow(10, i)
+      if (v < point) {
+        return i + 3
+      }
+    }
+  
+    return v < 1 ? 4 : 3 // < 100
   }
 
   _noFixUnits(d) {
@@ -102,7 +127,7 @@ class DecimalConverter {
       r = n.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     } catch {
       r = -1
-      console.warn('somthing is wrong', d)
+      console.warn('(noFix) somthing is wrong', d)
     }
     return r
   }
@@ -119,14 +144,18 @@ const CURRENCY_MAP = {
   input:
     d - target string or number to convert('12345678.90', 12345678.90)
     c - currency information to convert (USD, KRW, IDR, RUB, JPY)
-    f - fix unit (3 -> 1.003, 2 -> 1.01) 
-    s - currency symbol to pretend
+    o - options {
+      symbol - currency symbol to prepend
+      axis - strict convert (drop points)
+      point - number to fix
+      volume - eq. market cap, volume (default true)
+    }
   output (string):
-    '12,345,678' => '$12.00M' (in case c is USD, s is '$')
+    '12,345,678' => '$12.34M' (in case c is USD, s is '$')
     otherwise return '-'   
 */
-const convert = function(d, c, f, s) {
-  const cvt = new DecimalConverter(d, c, f, s)
+const convert = function (d, c, o = {}) {
+  const cvt = new DecimalConverter(d, c, o)
   let r = '-'
 
   try {
@@ -140,7 +169,7 @@ const convert = function(d, c, f, s) {
   }
   
   const symbol = CURRENCY_MAP[cvt.currency]
-  r = cvt.convert(cvt.symbol ? symbol : '')
+  r = cvt.convert(cvt.noSymbol ? '' : symbol)
 
   return r < 0 ? '-' : r
 }

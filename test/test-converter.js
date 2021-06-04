@@ -1,6 +1,6 @@
 var assert_equal = require('chai').assert.equal
 var assert_expect = require('chai').expect
-var convert = require('../src/converter.js')
+var convert = require('../src/converter.js').default
 
 
 describe("currency in USD", function() {
