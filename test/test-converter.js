@@ -8,6 +8,10 @@ describe("currency in USD", function() {
     assert_equal(convert(0.065264, 'USD'), '$0.06526');
   });
 
+  it("0.065264 (1e-2) ARU", function() {
+    assert_equal(convert(0.065264, 'ARU'), '$0.06526');
+  });
+
   it("0.065264 (1e-2), axis", function() {
     assert_equal(convert(0.065264, 'USD', {axis: true}), '$0.0653');
   });

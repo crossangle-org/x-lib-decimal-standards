@@ -12,11 +12,11 @@ class DecimalConverter {
   constructor(targetNumber, currency, options) {
     // required
     this.number = targetNumber
-    this.currency = currency || 'USD'
+    this.currency = !CURRENCY_MAP[currency] ? 'USD' : currency
     
     // optional
     const { symbol, axis, point } = options
-    this.noSymbol = symbol === false
+    this.isNoSymbol = symbol === false
     this.isAxis = axis
 
     this.fixed = this._decimalPoint(targetNumber)
@@ -168,7 +168,7 @@ module.exports = function (d, c, o = {}) {
   }
   
   const symbol = CURRENCY_MAP[cvt.currency]
-  r = cvt.convert(cvt.noSymbol ? '' : symbol)
+  r = cvt.convert(cvt.isNoSymbol ? '' : symbol)
 
   return r < 0 ? '-' : r
 }
